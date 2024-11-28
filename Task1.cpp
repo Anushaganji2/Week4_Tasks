@@ -1,103 +1,100 @@
 #include <iostream>
 #include <vector>
-#include <string>
 #include <algorithm>
+#include <string>
+using namespace std;
 struct Control {
-    int id;               // Unique ID
-    std::string type;     // "button" or "slider"
-    std::string state;    // "visible", "invisible", "disabled"
-
-    // Implement the equality operator
+    int id;               
+    string type;    
+    string state;    
     bool operator==(const Control& other) const {
         return id == other.id && type == other.type && state == other.state;
     }
 };
 int main() {
-    // Step 1: Initialize a container of controls with sample data
-    std::vector<Control> controls = {
+    vector<Control> controls = {
         {1, "button", "visible"},
-        {2, "slider", "invisible"},
-        {3, "button", "disabled"},
-        {4, "slider", "visible"},
+        {2, "button", "invisible"},
+        {3, "slider", "visible"},
+        {4, "slider", "disabled"},
         {5, "button", "visible"},
-        {6, "slider", "disabled"},
-        {7, "button", "invisible"},
+        {6, "slider", "invisible"},
+        {7, "button", "disabled"},
         {8, "slider", "visible"},
-        {9, "button", "visible"},
+        {9, "button", "invisible"},
         {10, "slider", "disabled"}
     };
-    std::cout << "All Controls:\n";
-    std::for_each(controls.begin(), controls.end(), [](const Control& ctrl) {
-        std::cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n";
+    cout << "All Controls:\n";
+    for_each(controls.begin(), controls.end(), [](const Control& ctrl) {
+        cout << "ID: " << ctrl.id << ", Type: " << ctrl.type << ", State: " << ctrl.state << "\n";
     });
-    std::cout << "\n";
-    auto it = std::find_if(controls.begin(), controls.end(), [](const Control& ctrl) { return ctrl.id == 5; });
-    if (it != controls.end()) {
-        std::cout << "Found control with ID 5: Type = " << it->type << ", State = " << it->state << "\n";
+    auto foundControl = find_if(controls.begin(), controls.end(), [](const Control& ctrl) {
+        return ctrl.id == 3;
+    });
+    if (foundControl != controls.end()) {
+        cout << "\nFound Control with ID 3: Type: " << foundControl->type 
+                  << ", State: " << foundControl->state << "\n";
     } else {
-        std::cout << "Control with ID 5 not found.\n";
+        cout << "\nControl with ID 3 not found.\n";
     }
-    std::cout << "\n";
-    auto invisibleControl = std::find_if(controls.begin(), controls.end(), [](const Control& ctrl) {
+    auto invisibleControl = find_if(controls.begin(), controls.end(), [](const Control& ctrl) {
         return ctrl.state == "invisible";
     });
     if (invisibleControl != controls.end()) {
-        std::cout << "First invisible control: ID = " << invisibleControl->id << ", Type = " << invisibleControl->type << "\n";
+        cout << "\nFirst Invisible Control: ID: " << invisibleControl->id 
+                  << ", Type: " << invisibleControl->type << "\n";
     } else {
-        std::cout << "No invisible control found.\n";
+        cout << "\nNo invisible controls found.\n";
     }
-    std::cout << "\n";
-    auto adjacent = std::adjacent_find(controls.begin(), controls.end(), [](const Control& a, const Control& b) {
+    auto consecutiveSameState = adjacent_find(controls.begin(), controls.end(), [](const Control& a, const Control& b) {
         return a.state == b.state;
     });
-    if (adjacent != controls.end()) {
-        std::cout << "Found adjacent controls with the same state: ID = " << adjacent->id << " and ID = " << (adjacent + 1)->id << "\n";
+    if (consecutiveSameState != controls.end()) {
+        cout << "\nFound consecutive controls with the same state:\n";
+        cout << "ID1: " << consecutiveSameState->id 
+                  << ", State: " << consecutiveSameState->state 
+                  << "; ID2: " << (consecutiveSameState + 1)->id 
+                  << ", State: " << (consecutiveSameState + 1)->state << "\n";
     } else {
-        std::cout << "No adjacent controls with the same state found.\n";
+        cout << "\nNo consecutive controls with the same state found.\n";
     }
-    std::cout << "\n";
-    int visibleCount = std::count_if(controls.begin(), controls.end(), [](const Control& ctrl) {
+    int visibleCount = count_if(controls.begin(), controls.end(), [](const Control& ctrl) {
         return ctrl.state == "visible";
     });
-    std::cout << "Number of visible controls: " << visibleCount << "\n\n";
-    int disabledSlidersCount = std::count_if(controls.begin(), controls.end(), [](const Control& ctrl) {
+    cout << "\nNumber of Visible Controls: " << visibleCount << "\n";
+    int disabledSlidersCount = count_if(controls.begin(), controls.end(), [](const Control& ctrl) {
         return ctrl.type == "slider" && ctrl.state == "disabled";
     });
-    std::cout << "Number of disabled sliders: " << disabledSlidersCount << "\n\n";
-    std::vector<Control> controlsSubset = {
-        {1, "button", "visible"},
-        {2, "slider", "invisible"},
-        {3, "button", "disabled"}
-    };
-    bool areEqual = std::equal(controls.begin(), controls.begin() + 3, controlsSubset.begin(), controlsSubset.end());
-    if (areEqual) {
-        std::cout << "The first 3 controls are identical to the subset.\n";
+    cout << "\nNumber of Disabled Sliders: " << disabledSlidersCount << "\n";
+    bool areIdentical = equal(controls.begin(), controls.begin() + 5, controls.begin() + 5);
+    if (areIdentical) {
+        cout << "\nThe first five controls are identical to the next five.\n";
     } else {
-        std::cout << "The first 3 controls are not identical to the subset.\n";
+        cout << "\nThe first five controls are NOT identical to the next five.\n";
     }
     return 0;
 }
-/*Sample output:All Controls:
+/*All Controls:
 ID: 1, Type: button, State: visible
-ID: 2, Type: slider, State: invisible
-ID: 3, Type: button, State: disabled
-ID: 4, Type: slider, State: visible
+ID: 2, Type: button, State: invisible
+ID: 3, Type: slider, State: visible
+ID: 4, Type: slider, State: disabled
 ID: 5, Type: button, State: visible
-ID: 6, Type: slider, State: disabled
-ID: 7, Type: button, State: invisible
+ID: 6, Type: slider, State: invisible
+ID: 7, Type: button, State: disabled
 ID: 8, Type: slider, State: visible
-ID: 9, Type: button, State: visible
+ID: 9, Type: button, State: invisible
 ID: 10, Type: slider, State: disabled
 
-Found control with ID 5: Type = button, State = visible
+Found Control with ID 3: Type: slider, State: visible
 
-First invisible control: ID = 2, Type = slider
+First Invisible Control: ID: 2, Type: button
 
-Found adjacent controls with the same state: ID = 2 and ID = 3
+No consecutive controls with the same state found.
 
-Number of visible controls: 4
+Number of Visible Controls: 4
 
-Number of disabled sliders: 3
+Number of Disabled Sliders: 2
 
-The first 3 controls are not identical to the subset.
+The first five controls are NOT identical to the next five.
 */
