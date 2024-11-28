@@ -1,43 +1,49 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <cstdlib>
 using namespace std;
 int main() {
-    vector<string> controlStates = {"visible", "invisible", "enabled", "disabled"};
-    vector<string> backupStates(controlStates.size());
-    copy(controlStates.begin(), controlStates.end(), backupStates.begin());
-    cout << "Backup States: ";
-    for (const auto& state : backupStates) cout << state << " ";
-    cout << "\n";
-    fill(controlStates.begin(), controlStates.end(), "disabled");
-    cout << "After fill: ";
-    for (const auto& state : controlStates) cout << state << " ";
-    cout << "\n";
-    auto getRandomState = []() {
-        const char* states[] = {"visible", "invisible", "disabled"};
-        return states[rand() % 3];
-    };
-    generate(controlStates.begin(), controlStates.end(), getRandomState);
-    cout << "After generate: ";
-    for (const auto& state : controlStates) cout << state << " ";
-    cout << "\n";
-    transform(controlStates.begin(), controlStates.end(), controlStates.begin(),
-                   [](const string& state) { return (state == "slider") ? "invisible" : state; });
-    replace(controlStates.begin(), controlStates.end(), string("disabled"), string("enabled"));
-    auto newEnd = remove_if(controlStates.begin(), controlStates.end(),
-                                  [](const string& state) { return state == "invisible"; });
-    controlStates.erase(newEnd, controlStates.end());
-    reverse(controlStates.begin(), controlStates.end());
-    auto partitionPoint = partition(controlStates.begin(), controlStates.end(),
-                                         [](const string& state) { return state == "visible"; });
-    cout << "Final Control States: ";
-    for (const auto& state : controlStates) cout << state << " ";
+    vector<string> controls = {"visible", "invisible", "disabled", "visible", "disabled"};
+    vector<string> controls_backup(controls.size());
+    copy(controls.begin(), controls.end(), controls_backup.begin());
+    fill(controls.begin(), controls.end(), "disabled");
+    srand(time(0));
+    vector<string> states = {"visible", "invisible", "disabled"};
+    generate(controls.begin(), controls.end(), [&]() {
+        return states[rand() % states.size()];
+    });
+    for (const auto &state : controls) cout << state << " ";
+    cout << endl;
+    transform(controls.begin(), controls.end(), controls.begin(), [](const string &state) {
+        return (state == "visible") ? "invisible" : state;
+    });
+    for (const auto &state : controls) cout << state << " ";
+    cout << endl;
+    replace(controls.begin(), controls.end(), string("disabled"), string("enabled"));
+    for (const auto &state : controls) cout << state << " ";
+    cout << endl;
+    auto it = remove_if(controls.begin(), controls.end(), [](const string &state) {
+        return state == "invisible";
+    });
+    controls.erase(it, controls.end());
+    for (const auto &state : controls) cout << state << " ";
+    cout << endl;
+    reverse(controls.begin(), controls.end());
+    for (const auto &state : controls) cout << state << " ";
+    cout << endl;
+    partition(controls.begin(), controls.end(), [](const string &state) {
+        return state == "visible";
+    });
+    for (const auto &state : controls) cout << state << " ";
+    cout << endl;
     return 0;
 }
 
+
 /*output
-Backup States: visible invisible enabled disabled 
-After fill: disabled disabled disabled disabled 
-After generate: invisible invisible visible invisible 
-Final Control States: visible*/
+invisible disabled visible disabled visible 
+invisible disabled invisible disabled invisible 
+invisible enabled invisible enabled invisible 
+enabled enabled 
+enabled enabled 
+enabled enabled */
